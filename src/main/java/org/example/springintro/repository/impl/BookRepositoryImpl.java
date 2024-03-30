@@ -1,14 +1,13 @@
-package org.example.spring_intro.repository.impl;
+package org.example.springintro.repository.impl;
 
-import org.example.spring_intro.model.Book;
-import org.example.spring_intro.repository.BookRepository;
+import java.util.List;
+import org.example.springintro.model.Book;
+import org.example.springintro.repository.BookRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class BookRepositoryImpl implements BookRepository {
@@ -18,6 +17,7 @@ public class BookRepositoryImpl implements BookRepository {
     public BookRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
+
     @Override
     public Book save(Book book) {
         Session session = null;

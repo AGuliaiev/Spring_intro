@@ -1,4 +1,4 @@
-package org.example.spring_intro.model;
+package org.example.springintro.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,13 +11,6 @@ import lombok.Data;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    id (Long, PK)
-//title (String, not null)
-//author (String, not null)
-//isbn (String, not null, unique)
-//price (BigDecimal, not null)
-//description (String)
-//coverImage (String)
     private Long id;
     private String title;
     private String author;
@@ -25,5 +18,4 @@ public class Book {
     private String price;
     private String description;
     private String coverImage;
-
 }

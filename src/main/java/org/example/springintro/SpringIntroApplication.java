@@ -1,7 +1,7 @@
-package org.example.spring_intro;
+package org.example.springintro;
 
-import org.example.spring_intro.model.Book;
-import org.example.spring_intro.services.BookService;
+import org.example.springintro.model.Book;
+import org.example.springintro.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
