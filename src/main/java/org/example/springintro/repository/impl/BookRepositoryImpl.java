@@ -1,6 +1,7 @@
 package org.example.springintro.repository.impl;
 
 import java.util.List;
+import java.util.Optional;
 import org.example.springintro.model.Book;
 import org.example.springintro.repository.BookRepository;
 import org.hibernate.Session;
@@ -37,6 +38,15 @@ public class BookRepositoryImpl implements BookRepository {
             if (session != null) {
                 session.close();
             }
+        }
+    }
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return Optional.ofNullable(session.get(Book.class, id));
+        } catch (Exception e) {
+            throw new RuntimeException("Can't get book by id " + id, e);
         }
     }
 
