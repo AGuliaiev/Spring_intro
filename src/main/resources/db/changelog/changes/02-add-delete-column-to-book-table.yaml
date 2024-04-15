@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-delete-column-to-book-table
+      author: gulini
+      changes:
+        - addColumn:
+            tableName: books
+            columns:
+              - column:
+                  name: is_delete
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
