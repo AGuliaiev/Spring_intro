@@ -6,14 +6,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Data
+@Setter
+@Getter
 @SQLDelete(sql = "UPDATE books SET is_delete = true WHERE id=?")
-@Where(clause = "is_delete=false")
+@SQLRestriction(value = "is_delete=false")
 @Table(name = "books")
 public class Book {
     @Id
