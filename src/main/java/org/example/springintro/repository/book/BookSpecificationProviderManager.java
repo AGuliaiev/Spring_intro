@@ -1,6 +1,7 @@
 package org.example.springintro.repository.book;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.example.springintro.model.Book;
 import org.example.springintro.repository.SpecificationProvider;
@@ -18,7 +19,7 @@ public class BookSpecificationProviderManager implements SpecificationProviderMa
         return bookSpecificationProviders.stream()
                 .filter(provider -> provider.getKey().equals(key))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Can't find correct"
+                .orElseThrow(() -> new NoSuchElementException("Can't find correct"
                         + " specification provider for kye " + key));
     }
 }
