@@ -16,5 +16,7 @@ public class CreateBookRequestDto {
     @NotNull
     private String description;
     @NotNull
+    private String price;
+    private String description;
     private String coverImage;
 }
