@@ -8,6 +8,7 @@ import org.example.springintro.dto.BookSearchParameters;
 import org.example.springintro.dto.CreateBookRequestDto;
 import org.example.springintro.mapper.BookMapper;
 import org.example.springintro.services.BookService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +29,8 @@ public class BookController {
 
     @GetMapping
 
-    public List<BookDto> getAll() {
-        return bookService.findAll();
+    public List<BookDto> getAll(Pageable pageable) {
+        return bookService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
