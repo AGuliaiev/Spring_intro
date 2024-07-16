@@ -1,4 +1,4 @@
-package org.example.spring_intro;
+package org.example.springintro;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,5 +9,4 @@ class SpringIntroApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
