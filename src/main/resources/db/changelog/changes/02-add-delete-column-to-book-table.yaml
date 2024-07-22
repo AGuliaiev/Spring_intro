@@ -7,7 +7,7 @@ databaseChangeLog:
             tableName: books
             columns:
               - column:
-                  name: is_delete
+                  name: is_deleted
                   type: boolean
                   defaultValueBoolean: false
                   constraints:
