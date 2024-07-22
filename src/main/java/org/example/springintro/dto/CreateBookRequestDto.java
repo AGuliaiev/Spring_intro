@@ -8,8 +8,11 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateBookRequestDto {
+    @NotNull
     private String title;
+    @NotNull
     private String author;
+    @NotNull
     private String isbn;
     @Min(0)
     private String price;
