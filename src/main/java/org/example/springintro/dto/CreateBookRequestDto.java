@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import lombok.Data;
 
 @Data
@@ -17,7 +18,7 @@ public class CreateBookRequestDto {
     private String isbn;
     @NotNull
     @Min(0)
-    private String price;
+    private BigDecimal price;
     @NotBlank
     private String description;
     @NotBlank
