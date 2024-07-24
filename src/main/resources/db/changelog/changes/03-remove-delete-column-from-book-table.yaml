@@ -1,8 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: remove-delete-column-from-book-table
-      author: gulini
-      changes:
-        - dropColumn:
-            columnName: is_delete
-            tableName: books
