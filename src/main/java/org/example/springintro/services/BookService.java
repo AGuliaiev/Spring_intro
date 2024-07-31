@@ -9,7 +9,7 @@ public interface BookService {
     BookDto save(CreateBookRequestDto requestDto);
 
     List<BookDto> findAll();
-
+  
     BookDto findById(Long id);
 
     BookDto updateById(Long id, CreateBookRequestDto requestDto);
@@ -17,5 +17,4 @@ public interface BookService {
     void deleteById(Long id);
 
     List<BookDto> search(BookSearchParameters params);
-
 }
