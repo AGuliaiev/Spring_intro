@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-admin-user
+      author: gulini
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: 'petrov@example.com'
+              - column:
+                  name: password
+                  value: '$2a$10$AAtc2CC5E4SDXZgsKqPzOuINa68UhpLrquEq9k.jRF1HhaRu3pLr6'
+              - column:
+                  name: first_name
+                  value: 'Ivan'
+              - column:
+                  name: last_name
+                  value: 'Petrov'
+              - column:
+                  name: shipping_address
+                  value: '123 Admin St, Admin City'
+
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE email='petrov@example.com')"
+              - column:
+                  name: role_id
+                  value: 2
