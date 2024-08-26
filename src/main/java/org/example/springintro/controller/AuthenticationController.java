@@ -20,9 +20,6 @@ public class AuthenticationController {
     @PostMapping("/register")
     public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto requestDto)
             throws RegistrationException {
-        if (!requestDto.getPassword().equals(requestDto.getRepeatPassword())) {
-            throw new RegistrationException("Passwords do not match");
-        }
         return userService.register(requestDto);
     }
 }
