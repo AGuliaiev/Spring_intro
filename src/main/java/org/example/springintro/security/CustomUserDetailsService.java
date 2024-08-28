@@ -1,6 +1,7 @@
 package org.example.springintro.security;
 
 import lombok.RequiredArgsConstructor;
+import org.example.springintro.exception.EntityNotFoundException;
 import org.example.springintro.repository.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +17,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Can't find user by email"));
+                .orElseThrow(() -> new EntityNotFoundException("Can't find user by email"));
     }
 }

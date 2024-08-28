@@ -1,8 +1,6 @@
 package org.example.springintro.services.impl;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.example.springintro.dto.UserRegistrationRequestDto;
 import org.example.springintro.dto.UserResponseDto;
@@ -32,11 +30,9 @@ public class UserServiceImpl implements UserService {
         }
         User user = userMapper.toModel(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-        Optional<Role> userRole = roleRepository.findByRole(Role.RoleName.USER);
-        if (userRole.isEmpty()) {
-            throw new RuntimeException("User Role not found");
-        }
-        user.setRoles(new HashSet<>(Collections.singleton(userRole.get())));
+        Role role = roleRepository.findByRole(Role.RoleName.USER)
+                .orElseThrow(() -> new RuntimeException("User Role not found"));
+        user.setRoles(Set.of(role));
         userRepository.save(user);
         return userMapper.toDto(user);
     }
