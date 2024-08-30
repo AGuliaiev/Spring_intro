@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-roles-table
+      author: gulini
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+  - changeSet:
+      id: insert-roles-data
+      author: gulini
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role
+                  value: 'USER'
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role
+                  value: 'ADMIN'
