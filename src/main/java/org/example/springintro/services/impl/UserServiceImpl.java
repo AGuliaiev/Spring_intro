@@ -2,8 +2,8 @@ package org.example.springintro.services.impl;
 
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.example.springintro.dto.UserRegistrationRequestDto;
-import org.example.springintro.dto.UserResponseDto;
+import org.example.springintro.dto.user.UserRegistrationRequestDto;
+import org.example.springintro.dto.user.UserResponseDto;
 import org.example.springintro.exception.RegistrationException;
 import org.example.springintro.mapper.UserMapper;
 import org.example.springintro.model.Role;

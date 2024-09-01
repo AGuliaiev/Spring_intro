@@ -1,8 +1,8 @@
 package org.example.springintro.mapper;
 
 import org.example.springintro.config.MapperConfig;
-import org.example.springintro.dto.UserRegistrationRequestDto;
-import org.example.springintro.dto.UserResponseDto;
+import org.example.springintro.dto.user.UserRegistrationRequestDto;
+import org.example.springintro.dto.user.UserResponseDto;
 import org.example.springintro.model.User;
 import org.mapstruct.Mapper;
 
