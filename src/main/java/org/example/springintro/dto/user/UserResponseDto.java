@@ -1,4 +1,4 @@
-package org.example.springintro.dto;
+package org.example.springintro.dto.user;
 
 import lombok.Data;
 
