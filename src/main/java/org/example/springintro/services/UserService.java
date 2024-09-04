@@ -1,7 +1,7 @@
 package org.example.springintro.services;
 
-import org.example.springintro.dto.UserRegistrationRequestDto;
-import org.example.springintro.dto.UserResponseDto;
+import org.example.springintro.dto.user.UserRegistrationRequestDto;
+import org.example.springintro.dto.user.UserResponseDto;
 import org.example.springintro.exception.RegistrationException;
 
 public interface UserService {
