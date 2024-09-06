@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.example.springintro.dto.book.BookDtoWithoutCategoryIds;
 import org.example.springintro.dto.category.CategoryDto;
+import org.example.springintro.dto.category.CreateCategoryRequestDto;
 import org.example.springintro.services.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @Tag(
         name = "Book shop",
@@ -35,7 +34,7 @@ public class CategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create category", description = "Create category in the book shop")
-    public CategoryDto createCategory(@RequestBody @Valid CategoryDto categoryDto) {
+    public CategoryDto createCategory(@RequestBody @Valid CreateCategoryRequestDto categoryDto) {
         return categoryService.save(categoryDto);
     }
 
@@ -64,7 +63,7 @@ public class CategoryController {
     @Operation(summary = "Update category", description = "Update category in the book shop")
     public CategoryDto updateCategory(
             @PathVariable Long id,
-            @RequestBody @Valid CategoryDto categoryDto
+            @RequestBody @Valid CreateCategoryRequestDto categoryDto
     ) {
         return categoryService.updateById(id, categoryDto);
     }
@@ -75,21 +74,5 @@ public class CategoryController {
     @Operation(summary = "Delete category", description = "Delete category from the book shop")
     public void deleteCategory(@PathVariable Long id) {
         categoryService.deleteById(id);
-    }
-
-    @PreAuthorize("hasAuthority('USER')")
-    @GetMapping("/{id}/books")
-    @Operation(
-            summary = "Get books by category id",
-            description = "Get all books associated with a specific category"
-    )
-    public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(@PathVariable Long id) {
-        List<BookDtoWithoutCategoryIds> books = categoryService.findBooksByCategoryId(id);
-        if (books.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Category with id " + id + " not found"
-            );
-        }
-        return books;
     }
 }

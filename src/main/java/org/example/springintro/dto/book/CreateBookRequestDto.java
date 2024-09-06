@@ -3,6 +3,7 @@ package org.example.springintro.dto.book;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,6 +25,6 @@ public class CreateBookRequestDto {
     private String description;
     @NotBlank
     private String coverImage;
-    @NotNull
+    @NotEmpty
     private List<Long> categoryIds;
 }

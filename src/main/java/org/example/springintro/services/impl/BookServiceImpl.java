@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.springintro.dto.book.BookDto;
+import org.example.springintro.dto.book.BookDtoWithoutCategoryIds;
 import org.example.springintro.dto.book.BookSearchParameters;
 import org.example.springintro.dto.book.CreateBookRequestDto;
 import org.example.springintro.exception.EntityNotFoundException;
@@ -49,6 +50,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto updateById(Long id, CreateBookRequestDto requestDto) {
         Book book = findByIdOrThrow(id);
+        bookMapper.updateBookFromDto(requestDto, book);
         addCategories(book, requestDto.getCategoryIds());
         return bookMapper.toDto(bookRepository.save(book));
     }
@@ -64,6 +66,14 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll(bookSpecification, pageable)
                 .stream()
                 .map(bookMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<BookDtoWithoutCategoryIds> findBooksByCategoryId(Long id) {
+        List<Book> books = bookRepository.findAllByCategories_Id(id);
+        return books.stream()
+                .map(bookMapper::toDtoWithoutCategories)
                 .toList();
     }
 
