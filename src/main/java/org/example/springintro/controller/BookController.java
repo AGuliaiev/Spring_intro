@@ -5,9 +5,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.example.springintro.dto.BookDto;
-import org.example.springintro.dto.BookSearchParameters;
-import org.example.springintro.dto.CreateBookRequestDto;
+import org.example.springintro.dto.book.BookDto;
+import org.example.springintro.dto.book.BookDtoWithoutCategoryIds;
+import org.example.springintro.dto.book.BookSearchParameters;
+import org.example.springintro.dto.book.CreateBookRequestDto;
 import org.example.springintro.mapper.BookMapper;
 import org.example.springintro.services.BookService;
 import org.springdoc.core.annotations.ParameterObject;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @Tag(
         name = "Book shop",
@@ -88,5 +90,21 @@ public class BookController {
             BookSearchParameters searchParameters
     ) {
         return bookService.search(searchParameters, pageable);
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("/{id}/books")
+    @Operation(
+            summary = "Get books by category id",
+            description = "Get all books associated with a specific category"
+    )
+    public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(@PathVariable Long id) {
+        List<BookDtoWithoutCategoryIds> books = bookService.findBooksByCategoryId(id);
+        if (books.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Category with id " + id + " not found"
+            );
+        }
+        return books;
     }
 }
