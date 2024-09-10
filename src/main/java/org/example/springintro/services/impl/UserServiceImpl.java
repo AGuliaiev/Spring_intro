@@ -11,6 +11,10 @@ import org.example.springintro.model.User;
 import org.example.springintro.repository.user.RoleRepository;
 import org.example.springintro.repository.user.UserRepository;
 import org.example.springintro.services.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +39,22 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(role));
         userRepository.save(user);
         return userMapper.toDto(user);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null
+                || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
+            throw new UsernameNotFoundException("User not authenticated");
+        }
+
+        String email = userDetails.getUsername();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "User not found with email: " + email
+                ));
     }
 }
