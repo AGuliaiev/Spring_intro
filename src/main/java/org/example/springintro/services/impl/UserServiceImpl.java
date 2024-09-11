@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
         Role role = roleRepository.findByRole(Role.RoleName.USER)
                 .orElseThrow(() -> new RuntimeException("User Role not found"));
         user.setRoles(Set.of(role));
-        shoppingCartService.createShoppingCart(user);
         userRepository.save(user);
         shoppingCartService.createShoppingCart(user);
         return userMapper.toDto(user);

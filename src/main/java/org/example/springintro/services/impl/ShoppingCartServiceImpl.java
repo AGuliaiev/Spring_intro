@@ -3,6 +3,7 @@ package org.example.springintro.services.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.springintro.dto.shoppingcart.ShoppingCartDto;
 import org.example.springintro.dto.shoppingcart.UpdateCartItemRequestDto;
+import org.example.springintro.exception.EntityNotFoundException;
 import org.example.springintro.mapper.ShoppingCartMapper;
 import org.example.springintro.model.Book;
 import org.example.springintro.model.CartItem;
@@ -49,10 +50,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             User user
     ) {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
-        CartItem cartItem = cartItemRepository.findByBookIdAndShoppingCartId(
+        CartItem cartItem = cartItemRepository.findByIdAndShoppingCartId(
                 cartItemId, shoppingCart.getId()
                 )
-                .orElseThrow(() -> new RuntimeException("CartItem not found"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "CartItem with ID " + cartItemId + " not found"));
         shoppingCartMapper.updateCartItemFromDto(requestDto, cartItem);
         cartItemRepository.save(cartItem);
         return shoppingCartMapper.toDto(cartItem.getShoppingCart());
