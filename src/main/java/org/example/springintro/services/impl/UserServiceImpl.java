@@ -10,6 +10,7 @@ import org.example.springintro.model.Role;
 import org.example.springintro.model.User;
 import org.example.springintro.repository.user.RoleRepository;
 import org.example.springintro.repository.user.UserRepository;
+import org.example.springintro.services.ShoppingCartService;
 import org.example.springintro.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService shoppingCartService;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto)
@@ -37,24 +39,8 @@ public class UserServiceImpl implements UserService {
         Role role = roleRepository.findByRole(Role.RoleName.USER)
                 .orElseThrow(() -> new RuntimeException("User Role not found"));
         user.setRoles(Set.of(role));
+        shoppingCartService.createShoppingCart(user);
         userRepository.save(user);
         return userMapper.toDto(user);
-    }
-
-    @Override
-    public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null
-                || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
-            throw new UsernameNotFoundException("User not authenticated");
-        }
-
-        String email = userDetails.getUsername();
-
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "User not found with email: " + email
-                ));
     }
 }
