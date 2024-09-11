@@ -4,7 +4,7 @@ databaseChangeLog:
       author: gulini
       changes:
         - createTable:
-            tableName: shopping_cart
+            tableName: shopping_carts
             columns:
               - column:
                   name: id
@@ -27,14 +27,15 @@ databaseChangeLog:
         - addUniqueConstraint:
             columnNames: user_id
             constraintName: unique_user_id
-            tableName: shopping_cart
+            tableName: shopping_carts
   - changeSet:
       id: add-foreign-keys
       author: gulini
       changes:
         - addForeignKeyConstraint:
-            baseTableName: shopping_cart
+            baseTableName: shopping_carts
             baseColumnNames: user_id
             constraintName: fk_shopping_cart_user
             referencedTableName: users
             referencedColumnNames: id
+ 

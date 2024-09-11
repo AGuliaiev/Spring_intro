@@ -7,12 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.example.springintro.dto.shoppingcart.AddToCartRequestDto;
 import org.example.springintro.dto.shoppingcart.ShoppingCartDto;
 import org.example.springintro.dto.shoppingcart.UpdateCartItemRequestDto;
+import org.example.springintro.model.User;
 import org.example.springintro.services.ShoppingCartService;
-import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,10 +38,9 @@ public class ShoppingCartController {
             summary = "Retrieve user's shopping cart",
             description = "Get the current user's shopping cart"
     )
-    public ShoppingCartDto getCartForCurrentUser(
-            @ParameterObject @PageableDefault Pageable pageable
-    ) {
-        return shoppingCartService.getCartForCurrentUser(pageable);
+    public ShoppingCartDto getCartForCurrentUser(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return shoppingCartService.getCartForCurrentUser(user.getId());
     }
 
     @PreAuthorize("hasAuthority('USER')")
@@ -52,8 +50,12 @@ public class ShoppingCartController {
             summary = "Add book to shopping cart",
             description = "Add a book to the current user's shopping cart"
     )
-    public ShoppingCartDto addBookToCart(@RequestBody @Valid AddToCartRequestDto requestDto) {
-        return shoppingCartService.addBookToCart(requestDto.getBookId(), requestDto.getQuantity());
+    public ShoppingCartDto addBookToCart(
+            Authentication authentication, @RequestBody @Valid AddToCartRequestDto requestDto
+    ) {
+        User user = (User) authentication.getPrincipal();
+        shoppingCartService.addBookToCart(requestDto.getBookId(), requestDto.getQuantity(), user);
+        return shoppingCartService.getCartForCurrentUser(user.getId());
     }
 
     @PreAuthorize("hasAuthority('USER')")
@@ -63,10 +65,12 @@ public class ShoppingCartController {
             description = "Update the quantity of a book in the shopping cart"
     )
     public ShoppingCartDto updateBookQuantity(
+            Authentication authentication,
             @PathVariable Long cartItemId,
             @RequestBody @Valid UpdateCartItemRequestDto requestDto
     ) {
-        return shoppingCartService.updateBookQuantity(cartItemId, requestDto);
+        User user = (User) authentication.getPrincipal();
+        return shoppingCartService.updateBookQuantity(cartItemId, requestDto, user);
     }
 
     @PreAuthorize("hasAuthority('USER')")
