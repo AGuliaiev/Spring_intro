@@ -10,7 +10,7 @@ public interface ShoppingCartService {
 
     void createShoppingCart(User user);
 
-    void removeBookFromCart(Long cartItemId, Long userId);
+    void removeBookFromCart(Long cartItemId, User user);
 
     ShoppingCartDto updateBookQuantity(
             Long cartItemId,

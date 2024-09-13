@@ -27,7 +27,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartDto getCartForCurrentUser(Long userId) {
-        return shoppingCartMapper.toDto(shoppingCartRepository.findByUserId(userId));
+        return shoppingCartMapper.toDto(findShoppingCartByUserId(userId));
     }
 
     @Override
@@ -38,12 +38,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public void removeBookFromCart(Long cartItemId, Long userId) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
-        CartItem cartItem = cartItemRepository.findByIdAndShoppingCartId(
-                cartItemId, shoppingCart.getId()
-                )
-                .orElseThrow(() -> new RuntimeException("CartItem not found"));
+    public void removeBookFromCart(Long cartItemId, User user) {
+        ShoppingCart shoppingCart = findShoppingCartByUserId(user.getId());
+        CartItem cartItem = findCartItemByIdAndShoppingCartId(cartItemId, shoppingCart.getId());
+        shoppingCart.getCartItems().remove(cartItem);
         cartItemRepository.delete(cartItem);
     }
 
@@ -51,14 +49,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartDto updateBookQuantity(
             Long cartItemId,
             UpdateCartItemRequestDto requestDto,
-            User user
-    ) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
-        CartItem cartItem = cartItemRepository.findByIdAndShoppingCartId(
-                cartItemId, shoppingCart.getId()
-                )
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "CartItem with ID " + cartItemId + " not found"));
+            User user) {
+        ShoppingCart shoppingCart = findShoppingCartByUserId(user.getId());
+        CartItem cartItem = findCartItemByIdAndShoppingCartId(cartItemId, shoppingCart.getId());
         shoppingCartMapper.updateCartItemFromDto(requestDto, cartItem);
         cartItemRepository.save(cartItem);
         return shoppingCartMapper.toDto(cartItem.getShoppingCart());
@@ -67,9 +60,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     @Transactional
     public ShoppingCartDto addBookToCart(AddToCartRequestDto itemDto, User user) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
-        Book book = bookRepository.findById(itemDto.getBookId())
-                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
+        ShoppingCart shoppingCart = findShoppingCartByUserId(user.getId());
+        Book book = findBookById(itemDto.getBookId());
         shoppingCart.getCartItems().stream()
                 .filter(item -> item.getBook().getId().equals(itemDto.getBookId()))
                 .findFirst()
@@ -83,12 +75,26 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private void addCartItemToCart(
             AddToCartRequestDto itemDto,
             Book book,
-            ShoppingCart shoppingCart
-    ) {
+            ShoppingCart shoppingCart) {
         CartItem cartItem = new CartItem();
         cartItem.setBook(book);
         cartItem.setQuantity(itemDto.getQuantity());
         cartItem.setShoppingCart(shoppingCart);
         shoppingCart.getCartItems().add(cartItem);
+    }
+
+    private ShoppingCart findShoppingCartByUserId(Long userId) {
+        return shoppingCartRepository.findByUserId(userId);
+    }
+
+    private CartItem findCartItemByIdAndShoppingCartId(Long cartItemId, Long shoppingCartId) {
+        return cartItemRepository.findByIdAndShoppingCartId(cartItemId, shoppingCartId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "CartItem with ID " + cartItemId + " not found"));
+    }
+
+    private Book findBookById(Long bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
     }
 }

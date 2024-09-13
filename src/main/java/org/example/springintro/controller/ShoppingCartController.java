@@ -81,6 +81,6 @@ public class ShoppingCartController {
     )
     public void removeBookFromCart(Authentication authentication, @PathVariable Long cartItemId) {
         User user = (User) authentication.getPrincipal();
-        shoppingCartService.removeBookFromCart(user.getId(), cartItemId);
+        shoppingCartService.removeBookFromCart(cartItemId, user);
     }
 }
