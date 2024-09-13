@@ -54,8 +54,7 @@ public class ShoppingCartController {
             Authentication authentication, @RequestBody @Valid AddToCartRequestDto requestDto
     ) {
         User user = (User) authentication.getPrincipal();
-        shoppingCartService.addBookToCart(requestDto.getBookId(), requestDto.getQuantity(), user);
-        return shoppingCartService.getCartForCurrentUser(user.getId());
+        return shoppingCartService.addBookToCart(requestDto, user);
     }
 
     @PreAuthorize("hasAuthority('USER')")
@@ -80,7 +79,8 @@ public class ShoppingCartController {
             summary = "Remove book from shopping cart",
             description = "Remove a book from the shopping cart"
     )
-    public void removeBookFromCart(@PathVariable Long cartItemId) {
-        shoppingCartService.removeBookFromCart(cartItemId);
+    public void removeBookFromCart(Authentication authentication, @PathVariable Long cartItemId) {
+        User user = (User) authentication.getPrincipal();
+        shoppingCartService.removeBookFromCart(user.getId(), cartItemId);
     }
 }
