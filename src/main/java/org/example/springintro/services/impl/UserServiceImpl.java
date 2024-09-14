@@ -10,6 +10,7 @@ import org.example.springintro.model.Role;
 import org.example.springintro.model.User;
 import org.example.springintro.repository.user.RoleRepository;
 import org.example.springintro.repository.user.UserRepository;
+import org.example.springintro.services.ShoppingCartService;
 import org.example.springintro.services.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService shoppingCartService;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto requestDto)
@@ -34,6 +36,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User Role not found"));
         user.setRoles(Set.of(role));
         userRepository.save(user);
+        shoppingCartService.createShoppingCart(user);
         return userMapper.toDto(user);
     }
 }
