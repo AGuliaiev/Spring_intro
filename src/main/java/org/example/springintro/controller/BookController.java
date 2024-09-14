@@ -9,7 +9,6 @@ import org.example.springintro.dto.book.BookDto;
 import org.example.springintro.dto.book.BookDtoWithoutCategoryIds;
 import org.example.springintro.dto.book.BookSearchParameters;
 import org.example.springintro.dto.book.CreateBookRequestDto;
-import org.example.springintro.mapper.BookMapper;
 import org.example.springintro.services.BookService;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +36,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/books")
 public class BookController {
     private final BookService bookService;
-    private final BookMapper bookMapper;
 
     @PreAuthorize("hasAuthority('USER')")
     @GetMapping

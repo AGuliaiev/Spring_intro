@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(
-        name = "Book shop",
+        name = "Categories",
         description = "Endpoints for Endpoints for managing categories in the book shop"
 )
 @RequiredArgsConstructor
