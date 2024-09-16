@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.example.springintro.dto.order.CreateOrderRequestDto;
 import org.example.springintro.dto.order.OrderDto;
 import org.example.springintro.dto.order.OrderItemDto;
 import org.example.springintro.dto.order.OrderRequestDto;
 import org.example.springintro.dto.order.OrderStatusUpdateDto;
+import org.example.springintro.exception.EntityNotFoundException;
 import org.example.springintro.mapper.OrderMapper;
 import org.example.springintro.model.Order;
 import org.example.springintro.model.OrderItem;
@@ -34,12 +34,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public CreateOrderRequestDto placeOrder(User user, OrderRequestDto requestDto) {
+    public OrderDto placeOrder(User user, OrderRequestDto requestDto) {
         ShoppingCart cart = getAndValidateCart(user.getId());
         Order order = createOrderFromCart(cart, requestDto);
         orderRepository.save(order);
         shoppingCartRepository.delete(cart);
-        return orderMapper.toCreateOrderRequestDto(order);
+        return orderMapper.toDto(order);
     }
 
     @Override
@@ -49,31 +49,31 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     public OrderDto updateOrderStatus(Long orderId, OrderStatusUpdateDto orderUpdateDto) {
         Order order = findOrderById(orderId);
         orderMapper.updateOrderFromDto(orderUpdateDto, order);
-        Order updatedOrder = orderRepository.save(order);
-        return orderMapper.toDto(updatedOrder);
+        orderRepository.save(order);
+        return orderMapper.toDto(order);
     }
 
     @Override
-    public List<OrderItemDto> getOrderItems(Long orderId) {
-        List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
-        if (orderItems.isEmpty()) {
-            throw new IllegalArgumentException("No order items found for order ID: " + orderId);
-        }
-        return orderItems.stream().map(orderMapper::toOrderItemDto).toList();
+    public List<OrderItemDto> getOrderItems(Long orderId, Long userId) {
+        Order order = orderRepository.findByIdAndUserId(orderId, userId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No order items found for order ID: " + orderId));
+        return orderMapper.toOrderItemDtoList(order.getOrderItems());
     }
 
     @Override
-    public OrderItemDto getOrderItemByOrderIdAndItemId(Long orderId, Long itemId) {
-        List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
-        OrderItem orderItem = orderItems.stream()
-                .filter(item -> item.getId().equals(itemId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Order item not found"));
-        return orderMapper.toOrderItemDto(orderItem);
+    public OrderItemDto getOrderItemByOrderIdAndItemId(
+            Long orderId,
+            Long orderItemId,
+            Long userId
+    ) {
+        OrderItem item = orderItemRepository.findByIdAndOrderIdAndUserId(
+                orderItemId, orderId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Order item not found"));
+        return orderMapper.toOrderItemDto(item);
     }
 
     private ShoppingCart getAndValidateCart(Long userId) {
@@ -116,6 +116,6 @@ public class OrderServiceImpl implements OrderService {
 
     private Order findOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
     }
 }

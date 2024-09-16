@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.example.springintro.dto.order.CreateOrderRequestDto;
 import org.example.springintro.dto.order.OrderDto;
 import org.example.springintro.dto.order.OrderItemDto;
 import org.example.springintro.dto.order.OrderRequestDto;
@@ -30,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 )
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/orders")
 public class OrderController {
 
     private final OrderService orderService;
@@ -42,7 +41,7 @@ public class OrderController {
             summary = "Place an order",
             description = "Place a new order based on the user's shopping cart"
     )
-    public CreateOrderRequestDto placeOrder(
+    public OrderDto placeOrder(
             Authentication authentication,
             @RequestBody @Valid OrderRequestDto requestDto
     ) {
@@ -67,8 +66,10 @@ public class OrderController {
             summary = "Retrieve all items in a specific order",
             description = "Get all items for a specific order"
     )
-    public List<OrderItemDto> getOrderItems(@PathVariable Long orderId) {
-        return orderService.getOrderItems(orderId);
+    public List<OrderItemDto> getOrderItems(Authentication authentication,
+                                            @PathVariable Long orderId) {
+        User user = (User) authentication.getPrincipal();
+        return orderService.getOrderItems(orderId, user.getId());
     }
 
     @PreAuthorize("hasAuthority('USER')")
@@ -77,8 +78,11 @@ public class OrderController {
             summary = "Retrieve a specific item in an order",
             description = "Get details of a specific item in a specific order"
     )
-    public OrderItemDto getOrderItem(@PathVariable Long orderId, @PathVariable Long itemId) {
-        return orderService.getOrderItemByOrderIdAndItemId(orderId, itemId);
+    public OrderItemDto getOrderItem(Authentication authentication,
+                                     @PathVariable Long orderId,
+                                     @PathVariable Long itemId) {
+        User user = (User) authentication.getPrincipal();
+        return orderService.getOrderItemByOrderIdAndItemId(orderId, itemId, user.getId());
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

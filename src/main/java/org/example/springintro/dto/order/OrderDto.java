@@ -12,7 +12,6 @@ public class OrderDto {
     private Long userId;
     private LocalDateTime orderDate;
     private BigDecimal total;
-    private String shippingAddress;
     private Status status;
     private List<OrderItemDto> orderItems;
 }
