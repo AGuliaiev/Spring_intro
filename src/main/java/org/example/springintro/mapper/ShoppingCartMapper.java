@@ -1,7 +1,6 @@
 package org.example.springintro.mapper;
 
 import org.example.springintro.config.MapperConfig;
-import org.example.springintro.dto.shoppingcart.AddToCartRequestDto;
 import org.example.springintro.dto.shoppingcart.CartItemResponseDto;
 import org.example.springintro.dto.shoppingcart.ShoppingCartDto;
 import org.example.springintro.dto.shoppingcart.UpdateCartItemRequestDto;
@@ -23,10 +22,6 @@ public interface ShoppingCartMapper {
     @Mapping(source = "book.id", target = "bookId")
     @Mapping(source = "book.title", target = "bookTitle")
     CartItemResponseDto toCartItemDto(CartItem cartItem);
-
-    @Mapping(source = "bookId", target = "book", qualifiedByName = "bookFromId")
-    @Mapping(target = "shoppingCart", ignore = true)
-    CartItem toEntity(AddToCartRequestDto requestDto);
 
     void updateCartItemFromDto(UpdateCartItemRequestDto requestDto, @MappingTarget CartItem entity);
 
