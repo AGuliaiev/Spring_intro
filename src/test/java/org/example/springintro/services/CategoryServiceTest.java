@@ -40,34 +40,34 @@ class CategoryServiceTest {
             + " when findAll is called, then return list of categoryDtos")
     public void findAll_CategoriesExist_ReturnsListOfCategoryDtos() {
         // given
-        Category category1 = new Category();
-        category1.setId(1L);
-        category1.setName("Fiction");
+        Category categoryFirst = new Category();
+        categoryFirst.setId(1L);
+        categoryFirst.setName("Fiction");
 
-        Category category2 = new Category();
-        category2.setId(2L);
-        category2.setName("Non-Fiction");
+        Category categorySecond = new Category();
+        categorySecond.setId(2L);
+        categorySecond.setName("Non-Fiction");
 
-        CategoryDto categoryDto1 = new CategoryDto();
-        categoryDto1.setId(1L);
-        categoryDto1.setName("Fiction");
+        CategoryDto categoryDtoFirst = new CategoryDto();
+        categoryDtoFirst.setId(1L);
+        categoryDtoFirst.setName("Fiction");
 
-        CategoryDto categoryDto2 = new CategoryDto();
-        categoryDto2.setId(2L);
-        categoryDto2.setName("Non-Fiction");
+        CategoryDto categoryDtoSecond = new CategoryDto();
+        categoryDtoSecond.setId(2L);
+        categoryDtoSecond.setName("Non-Fiction");
 
-        when(categoryRepository.findAll()).thenReturn(List.of(category1, category2));
-        when(categoryMapper.toDto(category1)).thenReturn(categoryDto1);
-        when(categoryMapper.toDto(category2)).thenReturn(categoryDto2);
+        when(categoryRepository.findAll()).thenReturn(List.of(categoryFirst, categorySecond));
+        when(categoryMapper.toDto(categoryFirst)).thenReturn(categoryDtoFirst);
+        when(categoryMapper.toDto(categorySecond)).thenReturn(categoryDtoSecond);
 
         // when
         List<CategoryDto> result = categoryService.findAll();
 
         // then
-        assertThat(result).containsExactlyInAnyOrder(categoryDto1, categoryDto2);
+        assertThat(result).containsExactlyInAnyOrder(categoryDtoFirst, categoryDtoSecond);
         verify(categoryRepository, times(1)).findAll();
-        verify(categoryMapper, times(1)).toDto(category1);
-        verify(categoryMapper, times(1)).toDto(category2);
+        verify(categoryMapper, times(1)).toDto(categoryFirst);
+        verify(categoryMapper, times(1)).toDto(categorySecond);
     }
 
     @Test

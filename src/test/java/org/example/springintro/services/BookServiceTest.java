@@ -70,10 +70,10 @@ class BookServiceTest {
         requestDto.setCoverImage("test-image-url");
         requestDto.setCategoryIds(List.of(1L, 2L));
 
-        Category category1 = new Category();
-        category1.setId(1L);
-        Category category2 = new Category();
-        category2.setId(2L);
+        Category categoryFirst = new Category();
+        categoryFirst.setId(1L);
+        Category categorySecond = new Category();
+        categorySecond.setId(2L);
 
         Book book = new Book();
         book.setTitle(requestDto.getTitle());
@@ -82,7 +82,7 @@ class BookServiceTest {
         book.setPrice(requestDto.getPrice());
         book.setDescription(requestDto.getDescription());
         book.setCoverImage(requestDto.getCoverImage());
-        book.setCategories(new HashSet<>(Arrays.asList(category1, category2)));
+        book.setCategories(new HashSet<>(Arrays.asList(categoryFirst, categorySecond)));
 
         BookDto bookDto = new BookDto();
         bookDto.setId(1L);
@@ -96,7 +96,7 @@ class BookServiceTest {
 
         // When
         when(categoryRepository.findAllById(requestDto.getCategoryIds()))
-                .thenReturn(List.of(category1, category2));
+                .thenReturn(List.of(categoryFirst, categorySecond));
         when(bookMapper.toModel(requestDto)).thenReturn(book);
         when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.toDto(book)).thenReturn(bookDto);
