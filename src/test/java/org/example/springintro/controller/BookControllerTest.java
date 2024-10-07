@@ -3,7 +3,6 @@ package org.example.springintro.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,12 +12,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
 import lombok.SneakyThrows;
@@ -27,16 +24,12 @@ import org.example.springintro.dto.book.BookDtoWithoutCategoryIds;
 import org.example.springintro.dto.book.CreateBookRequestDto;
 import org.example.springintro.model.Book;
 import org.example.springintro.model.Category;
-import org.example.springintro.services.BookService;
 import org.example.springintro.util.TestUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -49,7 +42,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
 class BookControllerTest {
     protected static MockMvc mockMvc;
 
@@ -59,10 +51,7 @@ class BookControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Mock
-    private BookService bookService;
-
-    @InjectMocks
+    @Autowired
     private BookController bookController;
 
     @BeforeAll
@@ -74,7 +63,7 @@ class BookControllerTest {
                 .webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
-        teardown(dataSource);
+
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(
@@ -103,8 +92,15 @@ class BookControllerTest {
     }
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setUp(@Autowired DataSource dataSource) throws SQLException {
+        teardown(dataSource);
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(true);
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/books/add-books-and-categories.sql")
+            );
+        }
     }
 
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
@@ -355,10 +351,6 @@ class BookControllerTest {
                 "cover3.jpg"
         );
 
-        List<BookDtoWithoutCategoryIds> books = List.of(bookFirst, bookSecond, bookThird);
-
-        when(bookService.findBooksByCategoryId(EXISTING_ID)).thenReturn(books);
-
         // When
         MvcResult result = mockMvc.perform(get("/books/" + EXISTING_ID + "/books")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -379,14 +371,13 @@ class BookControllerTest {
     @Test
     @DisplayName("Get books by category ID - Non Existing Category")
     void getBooksByCategoryId_NonExistingCategory_ReturnsNotFound() throws Exception {
-        when(bookService.findBooksByCategoryId(NON_EXISTING_ID))
-                .thenReturn(Collections.emptyList());
-
+        // When
         MvcResult result = mockMvc.perform(get("/books/" + NON_EXISTING_ID + "/books")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
+        // Then
         assertNotNull(result.getResolvedException());
         String expectedMessage = "Category with id " + NON_EXISTING_ID + " not found";
         assertTrue(result.getResolvedException().getMessage().contains(expectedMessage));

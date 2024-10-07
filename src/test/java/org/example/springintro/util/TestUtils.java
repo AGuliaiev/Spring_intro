@@ -7,6 +7,8 @@ import java.util.List;
 import org.example.springintro.dto.book.BookDto;
 import org.example.springintro.dto.book.BookDtoWithoutCategoryIds;
 import org.example.springintro.dto.book.CreateBookRequestDto;
+import org.example.springintro.dto.category.CategoryDto;
+import org.example.springintro.dto.category.CreateCategoryRequestDto;
 import org.example.springintro.model.Book;
 import org.example.springintro.model.Category;
 
@@ -56,13 +58,6 @@ public class TestUtils {
         return book;
     }
 
-    public static Category createCategory(Long id, String name) {
-        Category category = new Category();
-        category.setId(id);
-        category.setName(name);
-        return category;
-    }
-
     public static BookDto createBookDto(Book book, List<Long> categoryIds) {
         BookDto dto = new BookDto();
         dto.setId(book.getId());
@@ -95,5 +90,46 @@ public class TestUtils {
         dto.setCoverImage(coverImage);
         dto.setCategoryIds(categoryIds);
         return dto;
+    }
+
+    public static CreateCategoryRequestDto createCategoryRequestDto(
+            String name,
+            String description
+    ) {
+        CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto();
+        requestDto.setName(name);
+        requestDto.setDescription(description);
+        return requestDto;
+    }
+
+    public static Category createCategory(long id, String name, String description) {
+        Category category = new Category();
+        category.setId(id);
+        category.setName(name);
+        category.setDescription(description);
+        return category;
+    }
+
+    public static Category createCategory(Long id, String name) {
+        Category category = new Category();
+        category.setId(id);
+        category.setName(name);
+        return category;
+    }
+
+    public static Category createCategory(long id, String name) {
+        return createCategory(id, name, null);
+    }
+
+    public static CategoryDto createCategoryDto(long id, String name) {
+        return createCategoryDto(id, name, null);
+    }
+
+    public static CategoryDto createCategoryDto(long id, String name, String description) {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(id);
+        categoryDto.setName(name);
+        categoryDto.setDescription(description);
+        return categoryDto;
     }
 }

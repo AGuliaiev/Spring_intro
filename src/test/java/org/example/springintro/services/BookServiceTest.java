@@ -11,8 +11,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.example.springintro.dto.book.BookDto;
@@ -27,6 +25,7 @@ import org.example.springintro.repository.book.BookRepository;
 import org.example.springintro.repository.book.BookSpecificationBuilder;
 import org.example.springintro.repository.categoty.CategoryRepository;
 import org.example.springintro.services.impl.BookServiceImpl;
+import org.example.springintro.util.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,38 +60,21 @@ class BookServiceTest {
     @DisplayName("save() - Given valid CreateBookRequestDto, When saving, Then returns BookDto")
     public void save_ValidCreateBookRequestDto_ReturnsBookDto() {
         // Given
-        CreateBookRequestDto requestDto = new CreateBookRequestDto();
-        requestDto.setTitle("Test Book");
-        requestDto.setAuthor("Test Author");
-        requestDto.setIsbn("123-4567890123");
-        requestDto.setPrice(BigDecimal.valueOf(100));
-        requestDto.setDescription("A test book description");
-        requestDto.setCoverImage("test-image-url");
-        requestDto.setCategoryIds(List.of(1L, 2L));
+        CreateBookRequestDto requestDto = TestUtils.createBookRequestDto();
+        Category categoryFirst = TestUtils.createCategory(1L, "Fiction");
+        Category categorySecond = TestUtils.createCategory(2L, "History");
 
-        Category categoryFirst = new Category();
-        categoryFirst.setId(1L);
-        Category categorySecond = new Category();
-        categorySecond.setId(2L);
-
-        Book book = new Book();
-        book.setTitle(requestDto.getTitle());
-        book.setAuthor(requestDto.getAuthor());
-        book.setIsbn(requestDto.getIsbn());
-        book.setPrice(requestDto.getPrice());
-        book.setDescription(requestDto.getDescription());
-        book.setCoverImage(requestDto.getCoverImage());
-        book.setCategories(new HashSet<>(Arrays.asList(categoryFirst, categorySecond)));
-
-        BookDto bookDto = new BookDto();
-        bookDto.setId(1L);
-        bookDto.setTitle(book.getTitle());
-        bookDto.setAuthor(book.getAuthor());
-        bookDto.setIsbn(book.getIsbn());
-        bookDto.setPrice(book.getPrice());
-        bookDto.setDescription(book.getDescription());
-        bookDto.setCoverImage(book.getCoverImage());
-        bookDto.setCategoryIds(List.of(1L, 2L));
+        Book book = TestUtils.createBook(requestDto, categoryFirst, categorySecond);
+        BookDto bookDto = TestUtils.createBookDto(
+                1L,
+                requestDto.getTitle(),
+                requestDto.getAuthor(),
+                requestDto.getIsbn(),
+                requestDto.getPrice(),
+                requestDto.getDescription(),
+                requestDto.getCoverImage(),
+                List.of(1L, 2L)
+        );
 
         // When
         when(categoryRepository.findAllById(requestDto.getCategoryIds()))
@@ -142,8 +124,20 @@ class BookServiceTest {
     public void findById_ValidId_ReturnsBookDto() {
         // Given
         Long id = 1L;
-        Book book = new Book();
-        BookDto bookDto = new BookDto();
+        BookDto bookDto = TestUtils.createBookDto(
+                id,
+                "Test Book",
+                "Test Author",
+                "123-4567890123",
+                BigDecimal.valueOf(49.99),
+                "Test description",
+                "test-image.jpg",
+                List.of(1L)
+        );
+        Book book = TestUtils.createBook(
+                TestUtils.createBookRequestDto(),
+                TestUtils.createCategory(1L, "Test Category")
+        );
 
         // When
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
@@ -265,8 +259,20 @@ class BookServiceTest {
     public void findBooksByCategoryId_ValidCategoryId_ReturnsListOfBookDtoWithoutCategoryIds() {
         // Given
         Long categoryId = 1L;
-        Book book = new Book();
-        BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds = new BookDtoWithoutCategoryIds();
+        BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds = TestUtils
+                .createBookDtoWithoutCategoryIds(
+                1L,
+                "Test Book",
+                "Test Author",
+                "123-4567890123",
+                BigDecimal.valueOf(49.99),
+                "Test description",
+                "test-image.jpg"
+        );
+        Book book = TestUtils.createBook(
+                TestUtils.createBookRequestDto(),
+                TestUtils.createCategory(1L, "Test Category")
+        );
 
         // When
         when(bookRepository.findAllByCategories_Id(categoryId)).thenReturn(List.of(book));
