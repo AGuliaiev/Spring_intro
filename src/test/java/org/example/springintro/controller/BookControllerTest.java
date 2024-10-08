@@ -26,6 +26,7 @@ import org.example.springintro.model.Book;
 import org.example.springintro.model.Category;
 import org.example.springintro.util.TestUtils;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -73,6 +74,25 @@ class BookControllerTest {
         }
     }
 
+    @BeforeEach
+    void setUp(@Autowired DataSource dataSource) throws SQLException {
+        teardown(dataSource);
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(true);
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/books/add-books-and-categories.sql")
+            );
+        }
+    }
+
+    @AfterEach
+    void afterEach(
+            @Autowired DataSource dataSource
+    ) {
+        teardown(dataSource);
+    }
+
     @AfterAll
     static void afterAll(
             @Autowired DataSource dataSource
@@ -87,18 +107,6 @@ class BookControllerTest {
             ScriptUtils.executeSqlScript(
                     connection,
                     new ClassPathResource("database/books/remove-books-and-categories.sql")
-            );
-        }
-    }
-
-    @BeforeEach
-    void setUp(@Autowired DataSource dataSource) throws SQLException {
-        teardown(dataSource);
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(true);
-            ScriptUtils.executeSqlScript(
-                    connection,
-                    new ClassPathResource("database/books/add-books-and-categories.sql")
             );
         }
     }

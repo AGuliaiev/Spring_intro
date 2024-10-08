@@ -53,12 +53,4 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGenericException(Exception e) {
-        return new ResponseEntity<>(
-                "An error occurred: " + e.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
 }
