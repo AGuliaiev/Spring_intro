@@ -25,7 +25,7 @@ import org.example.springintro.repository.book.BookRepository;
 import org.example.springintro.repository.book.BookSpecificationBuilder;
 import org.example.springintro.repository.categoty.CategoryRepository;
 import org.example.springintro.services.impl.BookServiceImpl;
-import org.example.springintro.util.TestUtils;
+import org.example.springintro.util.BookTestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,12 +60,12 @@ class BookServiceTest {
     @DisplayName("save() - Given valid CreateBookRequestDto, When saving, Then returns BookDto")
     public void save_ValidCreateBookRequestDto_ReturnsBookDto() {
         // Given
-        CreateBookRequestDto requestDto = TestUtils.createBookRequestDto();
-        Category categoryFirst = TestUtils.createCategory(1L, "Fiction");
-        Category categorySecond = TestUtils.createCategory(2L, "History");
+        CreateBookRequestDto requestDto = BookTestUtils.createBookRequestDto();
+        Category categoryFirst = BookTestUtils.createCategory(1L, "Fiction");
+        Category categorySecond = BookTestUtils.createCategory(2L, "History");
 
-        Book book = TestUtils.createBook(requestDto, categoryFirst, categorySecond);
-        BookDto bookDto = TestUtils.createBookDto(
+        Book book = BookTestUtils.createBook(requestDto, categoryFirst, categorySecond);
+        BookDto bookDto = BookTestUtils.createBookDto(
                 1L,
                 requestDto.getTitle(),
                 requestDto.getAuthor(),
@@ -124,7 +124,7 @@ class BookServiceTest {
     public void findById_ValidId_ReturnsBookDto() {
         // Given
         Long id = 1L;
-        BookDto bookDto = TestUtils.createBookDto(
+        BookDto bookDto = BookTestUtils.createBookDto(
                 id,
                 "Test Book",
                 "Test Author",
@@ -134,9 +134,9 @@ class BookServiceTest {
                 "test-image.jpg",
                 List.of(1L)
         );
-        Book book = TestUtils.createBook(
-                TestUtils.createBookRequestDto(),
-                TestUtils.createCategory(1L, "Test Category")
+        Book book = BookTestUtils.createBook(
+                BookTestUtils.createBookRequestDto(),
+                BookTestUtils.createCategory(1L, "Test Category")
         );
 
         // When
@@ -259,7 +259,7 @@ class BookServiceTest {
     public void findBooksByCategoryId_ValidCategoryId_ReturnsListOfBookDtoWithoutCategoryIds() {
         // Given
         Long categoryId = 1L;
-        BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds = TestUtils
+        BookDtoWithoutCategoryIds bookDtoWithoutCategoryIds = BookTestUtils
                 .createBookDtoWithoutCategoryIds(
                 1L,
                 "Test Book",
@@ -269,9 +269,9 @@ class BookServiceTest {
                 "Test description",
                 "test-image.jpg"
         );
-        Book book = TestUtils.createBook(
-                TestUtils.createBookRequestDto(),
-                TestUtils.createCategory(1L, "Test Category")
+        Book book = BookTestUtils.createBook(
+                BookTestUtils.createBookRequestDto(),
+                BookTestUtils.createCategory(1L, "Test Category")
         );
 
         // When

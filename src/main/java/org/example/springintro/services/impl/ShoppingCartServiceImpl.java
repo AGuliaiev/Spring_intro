@@ -27,7 +27,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartDto getCartForCurrentUser(Long userId) {
-        return shoppingCartMapper.toDto(findShoppingCartByUserId(userId));
+        ShoppingCart shoppingCart = findShoppingCartByUserId(userId);
+        if (shoppingCart == null) {
+            throw new EntityNotFoundException("Shopping cart not found for user id: " + userId);
+        }
+        return shoppingCartMapper.toDto(shoppingCart);
     }
 
     @Override

@@ -24,7 +24,7 @@ import org.example.springintro.dto.book.BookDtoWithoutCategoryIds;
 import org.example.springintro.dto.book.CreateBookRequestDto;
 import org.example.springintro.model.Book;
 import org.example.springintro.model.Category;
-import org.example.springintro.util.TestUtils;
+import org.example.springintro.util.BookTestUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,9 +51,6 @@ class BookControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private BookController bookController;
 
     @BeforeAll
     static void beforeAll(
@@ -116,12 +113,12 @@ class BookControllerTest {
     @DisplayName("Create a new Book")
     void createBook_ValidRequestDto_Success() throws Exception {
         // Given
-        CreateBookRequestDto requestDto = TestUtils.createBookRequestDto();
-        Category categoryFirst = TestUtils.createCategory(1L, "Category First");
-        Category categorySecond = TestUtils.createCategory(2L, "Category Second");
+        CreateBookRequestDto requestDto = BookTestUtils.createBookRequestDto();
+        Category categoryFirst = BookTestUtils.createCategory(1L, "Category First");
+        Category categorySecond = BookTestUtils.createCategory(2L, "Category Second");
 
-        Book book = TestUtils.createBook(requestDto, categoryFirst, categorySecond);
-        BookDto expected = TestUtils.createBookDto(book, List.of(1L, 2L));
+        Book book = BookTestUtils.createBook(requestDto, categoryFirst, categorySecond);
+        BookDto expected = BookTestUtils.createBookDto(book, List.of(1L, 2L));
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
@@ -180,7 +177,7 @@ class BookControllerTest {
     @DisplayName("Get all books")
     void getAll_GivenBooksInCatalog_ShouldReturnAllBooks() throws Exception {
         // Given
-        BookDto bookFirst = TestUtils.createBookDto(
+        BookDto bookFirst = BookTestUtils.createBookDto(
                 1L,
                 "Book Title 1",
                 "Author 1",
@@ -190,7 +187,7 @@ class BookControllerTest {
                 "cover1.jpg",
                 List.of(1L)
         );
-        BookDto bookSecond = TestUtils.createBookDto(
+        BookDto bookSecond = BookTestUtils.createBookDto(
                 2L,
                 "Book Title 2",
                 "Author 2",
@@ -200,7 +197,7 @@ class BookControllerTest {
                 "cover2.jpg",
                 List.of(1L)
         );
-        BookDto bookThird = TestUtils.createBookDto(
+        BookDto bookThird = BookTestUtils.createBookDto(
                 3L,
                 "Book Title 3",
                 "Author 3",
@@ -269,7 +266,7 @@ class BookControllerTest {
     @DisplayName("Update a Book")
     void updateBook_ValidRequestDto_Success() throws Exception {
         // Given
-        CreateBookRequestDto requestDto = TestUtils.createBookRequestDto();
+        CreateBookRequestDto requestDto = BookTestUtils.createBookRequestDto();
         requestDto.setTitle("Updated Book Title");
         requestDto.setAuthor("Updated Author");
 
@@ -297,7 +294,7 @@ class BookControllerTest {
     @DisplayName("Update a Book - Non Existing Book")
     void updateBook_NonExistingBook_ReturnsNotFound() throws Exception {
         // Given
-        CreateBookRequestDto requestDto = TestUtils.createBookRequestDto();
+        CreateBookRequestDto requestDto = BookTestUtils.createBookRequestDto();
         requestDto.setTitle("Updated Book Title");
         requestDto.setAuthor("Updated Author");
 
@@ -331,7 +328,7 @@ class BookControllerTest {
     @DisplayName("Get books by category ID - Existing Category with Books")
     void getBooksByCategoryId_ExistingCategoryWithBooks_ReturnsBooks() throws Exception {
         // Given
-        BookDtoWithoutCategoryIds bookFirst = TestUtils.createBookDtoWithoutCategoryIds(
+        BookDtoWithoutCategoryIds bookFirst = BookTestUtils.createBookDtoWithoutCategoryIds(
                 1L,
                 "Book Title 1",
                 "Author 1",
@@ -340,7 +337,7 @@ class BookControllerTest {
                 "Description of Book 1",
                 "cover1.jpg"
         );
-        BookDtoWithoutCategoryIds bookSecond = TestUtils.createBookDtoWithoutCategoryIds(
+        BookDtoWithoutCategoryIds bookSecond = BookTestUtils.createBookDtoWithoutCategoryIds(
                 2L,
                 "Book Title 2",
                 "Author 2",
@@ -349,7 +346,7 @@ class BookControllerTest {
                 "Description of Book 2",
                 "cover2.jpg"
         );
-        BookDtoWithoutCategoryIds bookThird = TestUtils.createBookDtoWithoutCategoryIds(
+        BookDtoWithoutCategoryIds bookThird = BookTestUtils.createBookDtoWithoutCategoryIds(
                 3L,
                 "Book Title 3",
                 "Author 3",

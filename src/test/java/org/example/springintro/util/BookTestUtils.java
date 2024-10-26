@@ -12,7 +12,7 @@ import org.example.springintro.dto.category.CreateCategoryRequestDto;
 import org.example.springintro.model.Book;
 import org.example.springintro.model.Category;
 
-public class TestUtils {
+public class BookTestUtils {
 
     public static BookDtoWithoutCategoryIds createBookDtoWithoutCategoryIds(
             Long id,
