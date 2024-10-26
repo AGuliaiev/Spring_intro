@@ -60,14 +60,13 @@ class AuthenticationControllerTest {
                 .webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
-
-        executeSqlScript(dataSource, "database/users/add-users.sql");
+        setupDatabase(dataSource);
     }
 
     @BeforeEach
     void setUp(@Autowired DataSource dataSource) throws SQLException {
         teardown(dataSource);
-        executeSqlScript(dataSource, "database/users/add-users.sql");
+        setupDatabase(dataSource);
     }
 
     @AfterEach
@@ -81,15 +80,43 @@ class AuthenticationControllerTest {
     }
 
     @SneakyThrows
-    static void teardown(DataSource dataSource) {
-        executeSqlScript(dataSource, "database/users/remove-users.sql");
+    static void setupDatabase(DataSource dataSource) {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(true);
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/roles/add-roles.sql")
+            );
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/users/add-users.sql")
+            );
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/users/add-users-roles.sql")
+            );
+        }
     }
 
     @SneakyThrows
-    private static void executeSqlScript(DataSource dataSource, String scriptPath) {
+    static void teardown(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
-            ScriptUtils.executeSqlScript(connection, new ClassPathResource(scriptPath));
+            ScriptUtils.executeSqlScript(
+                    connection,
+
+                    new ClassPathResource("database/users/remove-users-roles.sql")
+            );
+            ScriptUtils.executeSqlScript(
+                    connection,
+
+                    new ClassPathResource("database/users/remove-users.sql")
+            );
+            ScriptUtils.executeSqlScript(
+                    connection,
+
+                    new ClassPathResource("database/roles/remove-roles.sql")
+            );
         }
     }
 
