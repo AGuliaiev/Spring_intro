@@ -16,7 +16,7 @@ import org.example.springintro.mapper.CategoryMapper;
 import org.example.springintro.model.Category;
 import org.example.springintro.repository.categoty.CategoryRepository;
 import org.example.springintro.services.impl.CategoryServiceImpl;
-import org.example.springintro.util.TestUtils;
+import org.example.springintro.util.BookTestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,11 +41,11 @@ class CategoryServiceTest {
             + " when findAll is called, then return list of categoryDtos")
     public void findAll_CategoriesExist_ReturnsListOfCategoryDtos() {
         // given
-        Category categoryFirst = TestUtils.createCategory(1L, "Fiction");
-        Category categorySecond = TestUtils.createCategory(2L, "Non-Fiction");
+        Category categoryFirst = BookTestUtils.createCategory(1L, "Fiction");
+        Category categorySecond = BookTestUtils.createCategory(2L, "Non-Fiction");
 
-        CategoryDto categoryDtoFirst = TestUtils.createCategoryDto(1L, "Fiction");
-        CategoryDto categoryDtoSecond = TestUtils.createCategoryDto(2L, "Non-Fiction");
+        CategoryDto categoryDtoFirst = BookTestUtils.createCategoryDto(1L, "Fiction");
+        CategoryDto categoryDtoSecond = BookTestUtils.createCategoryDto(2L, "Non-Fiction");
 
         when(categoryRepository.findAll()).thenReturn(List.of(categoryFirst, categorySecond));
         when(categoryMapper.toDto(categoryFirst)).thenReturn(categoryDtoFirst);
@@ -67,8 +67,8 @@ class CategoryServiceTest {
     public void getById_CategoryExists_ReturnsCategoryDto() {
         // given
         Long id = 1L;
-        Category category = TestUtils.createCategory(id, "Fiction");
-        CategoryDto categoryDto = TestUtils.createCategoryDto(id, "Fiction");
+        Category category = BookTestUtils.createCategory(id, "Fiction");
+        CategoryDto categoryDto = BookTestUtils.createCategoryDto(id, "Fiction");
 
         when(categoryRepository.findById(id)).thenReturn(Optional.of(category));
         when(categoryMapper.toDto(category)).thenReturn(categoryDto);
@@ -103,12 +103,20 @@ class CategoryServiceTest {
             + " when save is called, then return saved categoryDto")
     public void save_ValidCategoryDto_ReturnsSavedCategoryDto() {
         // given
-        CreateCategoryRequestDto requestDto = TestUtils.createCategoryRequestDto(
+        CreateCategoryRequestDto requestDto = BookTestUtils.createCategoryRequestDto(
                 "New Category",
                 "A new category"
         );
-        Category category = TestUtils.createCategory(1L, "New Category", "A new category");
-        CategoryDto categoryDto = TestUtils.createCategoryDto(1L, "New Category", "A new category");
+        Category category = BookTestUtils.createCategory(
+                1L,
+                "New Category",
+                "A new category"
+        );
+        CategoryDto categoryDto = BookTestUtils.createCategoryDto(
+                1L,
+                "New Category",
+                "A new category"
+        );
 
         when(categoryMapper.toEntity(requestDto)).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(category);
@@ -130,12 +138,12 @@ class CategoryServiceTest {
     public void updateById_ValidIdAndDto_ReturnsUpdatedCategoryDto() {
         // given
         Long id = 1L;
-        CreateCategoryRequestDto requestDto = TestUtils.createCategoryRequestDto(
+        CreateCategoryRequestDto requestDto = BookTestUtils.createCategoryRequestDto(
                 "Updated Category",
                 "we update category"
         );
-        Category existingCategory = TestUtils.createCategory(id, "Old Category");
-        CategoryDto updatedCategoryDto = TestUtils.createCategoryDto(id, "Updated Category");
+        Category existingCategory = BookTestUtils.createCategory(id, "Old Category");
+        CategoryDto updatedCategoryDto = BookTestUtils.createCategoryDto(id, "Updated Category");
 
         when(categoryRepository.findById(id)).thenReturn(Optional.of(existingCategory));
 

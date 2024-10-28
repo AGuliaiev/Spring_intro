@@ -11,9 +11,11 @@ import org.example.springintro.dto.user.UserResponseDto;
 import org.example.springintro.exception.RegistrationException;
 import org.example.springintro.security.AuthenticationService;
 import org.example.springintro.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(
@@ -34,6 +36,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "User registration", description = "Register a new user")
     public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto requestDto)
             throws RegistrationException {
